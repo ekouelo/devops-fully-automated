@@ -19,15 +19,14 @@ pipeline {
         stage('Git checkout') {
             steps {
                 echo 'Cloning the application code...'
-                git branch: 'main', url: 'https://github.com/ekouelo/devops-fully-automated-v1'
-
+                git branch: 'main', url: 'https://github.com/ekouelo/devops-fully-automated-v1.git'
             }
         }
 
         stage('Build') {
             steps {
                 sh 'java -version'
-                sh 'mvn clean package'
+                sh 'mvn -U clean package'
             }
 
             post {
@@ -66,7 +65,7 @@ pipeline {
                         sh """
                     mvn sonar:sonar \
                     -Dsonar.projectKey=maven \
-                    -Dsonar.host.url=http://172.31.6.234:9000 \
+                    -Dsonar.host.url=http://172.31.29.237:9000 \
                     -Dsonar.login=$SONAR_TOKEN
                     """
                     }

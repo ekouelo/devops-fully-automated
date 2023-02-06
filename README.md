@@ -5,10 +5,10 @@
 
 ## CICD Applications setup
 1) ###### GitHub setup
-    Import GitHub Repository by using the existing repo "devops-fully-automated" (https://github.com/cvamsikrishna11/devops-fully-automated)     
+    Fork GitHub Repository by using the existing repo "devops-fully-automated" (https://github.com/ekouelo/devops-fully-automated-v1.git)     
     - Go to GitHub (github.com)
     - Login to your GitHub Account
-    - **Import repository "devops-fully-automated" (https://github.com/cvamsikrishna11/devops-fully-automated) & name it "devops-fully-automated"**
+    - **Fork repository "devops-fully-automated-v1" (https://github.com/ekouelo/devops-fully-automated-v1.git) & name it "devops-fully-automated"**
     - Clone your newly created repo to your local
 
 2) ###### Jenkins/Maven/Ansible
@@ -17,7 +17,7 @@
     - Security Group (Open): 8080, 9100 and 22 to 0.0.0.0/0
     - Key pair: Select or create a new keypair
     - **Attach Jenkins server with IAM role having "AdministratorAccess"**
-    - User data (Copy the following user data): https://github.com/cvamsikrishna11/devops-fully-automated/blob/installations/jenkins-maven-ansible-setup.sh
+    - User data (Copy the following user data): https://github.com/ekouelo/devops-fully-automated-v1/blob/installations/jenkins-maven-ansible-setup.sh
     - Launch Instance
     - After launching this Jenkins server, attach a tag as **Key=Application, value=jenkins**
 
@@ -26,7 +26,7 @@
     - Instance type: t2.medium
     - Security Group (Open): 9000, 9100 and 22 to 0.0.0.0/0
     - Key pair: Select or create a new keypair
-    - User data (Copy the following user data): https://github.com/cvamsikrishna11/devops-fully-automated/blob/installations/sonarqube-setup.sh
+    - User data (Copy the following user data): https://github.com/ekouelo/devops-fully-automated-v1/blob/installations/sonarqube-setup.sh
     - Launch Instance
 
 4) ###### Nexus
@@ -34,7 +34,7 @@
     - Instance type: t2.medium
     - Security Group (Open): 8081, 9100 and 22 to 0.0.0.0/0
     - Key pair: Select or create a new keypair
-    - User data (Copy the following user data): https://github.com/cvamsikrishna11/devops-fully-automated/blob/installations/nexus-setup.sh
+    - User data (Copy the following user data): https://github.com/ekouelo/devops-fully-automated-v1/blob/installations/nexus-setup.sh
     - Launch Instance
 
 5) ###### EC2 (Dev/Stage/Prod)
@@ -42,7 +42,7 @@
     - Instance type: t2.micro
     - Security Group (Open): 8080, 9100 and 22 to 0.0.0.0/0
     - Key pair: Select or create a new keypair
-    - User data (Copy the following user data): https://github.com/cvamsikrishna11/devops-fully-automated/blob/installations/deployment-servers-setup.sh
+    - User data (Copy the following user data): https://github.com/ekouelo/devops-fully-automated-v1/blob/installations/deployment-servers-setup.sh
     - Launch Instance
     - After launching this Jenkins servers, attach a tag as **Key=Environment, value=dev/stage/prod** ( out of 6, each 2 instances could be tagges as one env)
 
@@ -52,7 +52,7 @@
     - Security Group (Open): 9090 and 22 to 0.0.0.0/0
     - Key pair: Select or create a new keypair
     - **Attach Jenkins server with IAM role having "AmazonEC2ReadOnlyAccess"**
-    - User data (Copy the following user data): https://github.com/cvamsikrishna11/devops-fully-automated/blob/installations/prometheus-setup.sh
+    - User data (Copy the following user data): https://github.com/ekouelo/devops-fully-automated-v1/blob/installations/prometheus-setup.sh
     - Launch Instance
 
 7) ###### Grafana
@@ -60,12 +60,13 @@
     - Instance type: t2.micro
     - Security Group (Open): 3000 and 22 to 0.0.0.0/0
     - Key pair: Select or create a new keypair
-    - User data (Copy the following user data): https://github.com/cvamsikrishna11/devops-fully-automated/blob/installations/grafana-setup.sh
+    - User data (Copy the following user data): https://github.com/ekouelo/devops-fully-automated-v1/blob/installations/grafana-setup.sh
     - Launch Instance
 
 8) ###### Slack 
-    - **Join the slack channel https://join.slack.com/t/slack-wcl4742/shared_invite/zt-1kid01o3n-W47OUTHBd2ZZpSzGnow1Wg**
+    - **Join the slack channel https://join.slack.com/t/devopsfullyau-r0x2686/shared_invite/zt-1nzxt7e9z-ChDASWBOysUpa3tH5gi95A**
     - **Join into the channel "#team-devops"**
+    - Generate Team Subdomain & Integration Token Credential ID (workspace --> channel --> drop-down --> integrations --> Add an App --> Jenkins CI --> Click on Install/View --> Configuration --> Add to Slack --> Select Channel #team-devops --> Store Team subdomain & Integration Token Credential ID which can be used later on)
 
 ### Jenkins setup
 1) #### Access Jenkins
@@ -107,7 +108,15 @@
 
 4)  #### Global tools configuration:
     - Click on Manage Jenkins --> Global Tool Configuration
-    - **JDK** --> Add JDK --> Make sure **Install automatically** is enabled --> Extract *.zip/*.tar.gz --> Fill the below values
+
+        **JDK** --> Add JDK --> Make sure **Install automatically** is enabled --> 
+        
+        **Note:** By default the **Install Oracle Java SE Development Kit from the website** make sure to close that option by clicking on the image as shown below.
+
+        ![JDKSetup!](https://github.com/ekouelo/devops-fully-automated-v1/blob/main/jdk_setup.png)
+
+        * Click on Add installer
+        * Select Extract *.zip/*.tar.gz --> Fill the below values
         * Name: **localJdk**
         * Download URL for binary archive: **https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz**
         * Subdirectory of extracted archive: **jdk-11.0.1**
@@ -119,11 +128,11 @@
     - Click on Manage Jenkins --> Manage Credentials --> Global credentials (unrestricted) --> Add Credentials
 
         1)  ###### SonarQube secret token (sonarqube-token)
-            - Kind: Secret text
+            - Kind: Secret text :
                     Generating SonarQube secret token
                     - Login to your SonarQube server (http://sonarserver-public-ip:9000, with the credentials username: **admin** & password: **admin**)
                     - Click on profile --> My Account --> Security --> Tokens
-                    - Generate Tokens: **jenkins-token**
+                    - Generate Tokens: Fill **jenkins-token**
                     - Click on **Generate**
                     - Copy the token
             - Secret: Fill the secret token value that we have created on the SonarQube server
@@ -151,41 +160,48 @@
 
         4)  ###### Slack secret token (slack-token)
             - Kind: Secret text            
-            - Secret: 3jrfd3GjdMac0dgcxJwcOgQU
+            - Secret: Place the Integration Token Credential ID (Note: Generate for slack setup)
             - ID: slack-token
             - Description: slack-token
             - Click on Create                 
 
     
-6)  #### Configure system:
-    - Click on Manage Jenkins --> Global Tool Configuration
+6)  #### Configure system:    
 
-        1)  - Go to section SonarQube servers --> **Add SonarQube **
+        1)  - Click on Manage Jenkins --> Global Tool Configuration
+            - Go to section SonarQube servers --> **Add SonarQube **
             - Name: **SonarQube**
             - Server URL: http://REPLACE-WITH-SONARQUBE-SERVER-PRIVATE-IP:9000          (replace SonarQube privat IP here)
+            - Click on Save    
 
-        2)  - Go to section Prometheus
-            - Collecting metrics period in seconds: **120**
+        2)  - Click on Manage Jenkins --> Configure System
+            - Go to section Prometheus
+            - Collecting metrics period in seconds: **15**
+            - Click on Save
 
-        3)  - Go to section Slack
-            - Workspace: **devops-fully-automated**
-            - Credentials: select the slack-token credentials (created above) from the drop-down    
+        3)  - Click on Manage Jenkins --> Configure System
+            - Go to section Slack
+            - Use new team subdomain & integration token credentials created in the above slack joining step
+            - Workspace: **Replace with Team Subdomain value** (created above)
+            - Credentials: select the slack-token credentials (created above) 
+            - Default channel / member id: #general
+            - Click on Save  
 
 ### SonarQube setup
 
-Copy your Jenkins Public IP Address and paste on the browser = ExternalIP:9000
+Copy your SonarQube Public IP Address and paste on the browser = ExternalIP:9000
 
 1)  #### Jenkins webhook in SonarQube:
     - Login into SonarQube
     - Go to Administration --> Configuration --> Webhooks --> Click on Create
     - Name: Jenkins-Webhook
-    - URL: http://REPLACE-WITH-JENKINS-PRIVATE-IP:8080/sonarqube-webhook/           (replace SonarQube privat IP here)
+    - URL: http://REPLACE-WITH-JENKINS-PRIVATE-IP:8080/sonarqube-webhook/           (replace Jenkins private IP here)
     - Click on Create
 
 
 ### Nexus setup
 
-Copy your Jenkins Public IP Address and paste on the browser = http:://NexusServerExternalIP:8081
+Copy your Nexus Public IP Address and paste on the browser = http:://NexusServerExternalIP:8081
 
 1)  #### Setting up password:
     - SSH into Nexus server
@@ -214,7 +230,7 @@ Nothing to be done for the Ansible setup as the jenkins server already created w
 
 ### Prometheus setup
 
-Copy your Jenkins Public IP Address and paste on the browser = http:://PrometheusServerExternalIP:9090
+Copy your Prometheus Public IP Address and paste on the browser = http:://PrometheusServerExternalIP:9090
 
 Note: Prometheus setup is also full automated, so just verifying the health of servers are required
 
@@ -227,7 +243,7 @@ Note: Prometheus setup is also full automated, so just verifying the health of s
 
 ### Grafana setup
 
-Copy your Jenkins Public IP Address and paste on the browser = http:://GrafanaServerExternalIP:3000
+Copy your Grafana Public IP Address and paste on the browser = http:://GrafanaServerExternalIP:3000
 
 1)  #### Setting up username & password:
     - Once the UI Opens pass the following username and password
@@ -276,7 +292,7 @@ Copy your Jenkins Public IP Address and paste on the browser = http:://GrafanaSe
 1) #### Add jenkins webhook to github
     - Access your repo **devops-fully-automated** on github
     - Goto Settings --> Webhooks --> Click on Add webhook 
-    - Payload URL: **htpp://REPLACE-JENKINS-SERVER-PUBLIC-IP:8080/github-webhook/**             (Note: The IP should be public as GitHub is outside of the AWS VPC where Jenkins server is hosted)
+    - Payload URL: **http://REPLACE-JENKINS-SERVER-PUBLIC-IP:8080/github-webhook/**             (Note: The IP should be public as GitHub is outside of the AWS VPC where Jenkins server is hosted)
     - Click on Add webhook
 
 2) #### Configure on the Jenkins side to pull based on the event
@@ -289,16 +305,31 @@ Once both the above steps are done click on Save.
 
 ### Codebase setup
 
-1) #### Nexus IP's change
+1) #### SonarQube IP change
+    - Go back to your local, open your "devops-fully-automated" project on VSCODE
+    - Open "Jenkinsfile" & Replace the SonarQube server private ip on line number 69
+    - Save the changes in both files
+    - Finally push changes to repo
+        
+        `git add .`
+
+        `git commit -m "relevant commit message"`
+
+        `git push`
+
+2) #### Nexus IP's change
     - Go back to your local, open your "devops-fully-automated" project on VSCODE
     - Open "pom.xml" & Replace the nexus server private ip on line numbers 32 & 36
     - Open nexus-setup/settings.xml & Replace the nexus server private ip on line numbers 21
     - Save the changes in both files
     - Finally push changes to repo
+
         `git add .`
+
         `git commit -m "relevant commit message"`
+
         `git push`
 
 
 ## Finally observe the whole flow and understand the integrations :) 
-# Happy learning, everyone 😊 😊
+# Happy learning, everyone! 😊 😊
